@@ -1,0 +1,358 @@
+{
+  "id": "python-etape-3-classes-objets",
+  "slug": "classes-objets-creer-ses-propres-types",
+  "title": "Classes et objets : créer ses propres types",
+  "course": "Parcours Python",
+  "order": 3,
+  "language": "fr",
+  "contentLanguage": "python",
+  "blocks": [
+    {
+      "id": "objectif",
+      "type": "callout",
+      "variant": "card",
+      "title": "Objectif",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "Jusqu'ici, le menu était une liste de dictionnaires et chaque pizza était décrite avec des clés comme nom et prix_centimes. Dans cette étape, nous allons créer notre propre type Pizza."
+        },
+        {
+          "type": "paragraph",
+          "text": "À la fin, tu devras pouvoir :"
+        },
+        {
+          "type": "list",
+          "style": "bullet",
+          "items": [
+            "Expliquer la différence entre une classe et un objet.",
+            "Créer une classe avec des attributs et des méthodes.",
+            "Comprendre le rôle de __init__ et de self.",
+            "Créer plusieurs objets indépendants.",
+            "Remplacer les dictionnaires du menu par des objets Pizza."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "classe-et-objet",
+      "type": "section",
+      "number": 1,
+      "title": "Classe et objet : quelle différence ?",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "Une classe décrit une catégorie d'objets et les informations ou actions communes à cette catégorie. Un objet, aussi appelé instance, est un élément concret créé à partir de la classe."
+        },
+        {
+          "type": "paragraph",
+          "text": "Exemple :"
+        },
+        {
+          "type": "list",
+          "style": "bullet",
+          "items": [
+            "Pizza est la classe.",
+            "Une pizza Margherita à 8,50 € est un objet.",
+            "Une pizza Reine à 10,50 € est un autre objet de la même classe."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "On peut comparer la classe à un plan de fabrication et chaque objet à un exemplaire fabriqué à partir de ce plan."
+        }
+      ]
+    },
+    {
+      "id": "premiere-classe",
+      "type": "section",
+      "number": 2,
+      "title": "Créer une première classe",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "En Python, une classe se déclare avec le mot-clé class. Par convention, son nom commence par une majuscule."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "class Pizza:\n    pass\n\nmargherita = Pizza()"
+        },
+        {
+          "type": "paragraph",
+          "text": "La variable margherita contient maintenant un objet de la classe Pizza. La classe est encore vide ; nous allons lui donner des attributs et des méthodes."
+        }
+      ]
+    },
+    {
+      "id": "constructeur-init",
+      "type": "section",
+      "number": 3,
+      "title": "Le constructeur __init__",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "La méthode spéciale __init__ est appelée automatiquement lorsqu'on crée un objet. Elle sert généralement à initialiser ses attributs."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "class Pizza:\n    def __init__(self, nom, prix_centimes):\n        self.nom = nom\n        self.prix_centimes = prix_centimes\n\nmargherita = Pizza(\"Margherita\", 850)\nreine = Pizza(\"Reine\", 1050)\n\nprint(margherita.nom)           # Margherita\nprint(reine.prix_centimes)      # 1050"
+        },
+        {
+          "type": "paragraph",
+          "text": "Chaque objet a ses propres valeurs : modifier le nom de margherita ne modifie pas celui de reine."
+        },
+        {
+          "type": "paragraph",
+          "text": "En PHP ancien, le constructeur pouvait porter le nom de la classe. En Python, on utilise la méthode spéciale __init__."
+        }
+      ]
+    },
+    {
+      "id": "comprendre-self",
+      "type": "section",
+      "number": 4,
+      "title": "Comprendre self",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "self désigne l'objet courant, celui sur lequel la méthode est appelée."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "margherita = Pizza(\"Margherita\", 850)\n\n# Appel habituel :\nprint(margherita.nom)"
+        },
+        {
+          "type": "paragraph",
+          "text": "Quand Python appelle une méthode d'instance, il transmet automatiquement l'objet en premier argument. C'est pourquoi on écrit self dans la définition de la méthode. À l'appel, on écrit margherita.description(), sans passer self."
+        },
+        {
+          "type": "paragraph",
+          "text": "Le nom self est une convention Python largement suivie. Il ne s'agit pas d'un mot-clé réservé, mais il faut utiliser ce nom dans les méthodes d'instance."
+        }
+      ]
+    },
+    {
+      "id": "ajouter-methodes",
+      "type": "section",
+      "number": 5,
+      "title": "Ajouter des méthodes",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "Une méthode est une fonction définie dans une classe et appelée depuis un objet. Elle peut utiliser les attributs de cet objet grâce à self."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "class Pizza:\n    def __init__(self, nom, prix_centimes):\n        self.nom = nom\n        self.prix_centimes = prix_centimes\n\n    def description(self):\n        prix = self.prix_centimes / 100\n        return f\"{self.nom} — {prix:.2f} €\"\n\n    def prix_pour(self, quantite):\n        if quantite < 0:\n            raise ValueError(\"La quantité ne peut pas être négative.\")\n        return self.prix_centimes * quantite\n\nmargherita = Pizza(\"Margherita\", 850)\n\nprint(margherita.description())\nprint(margherita.prix_pour(2))  # 1700 centimes"
+        },
+        {
+          "type": "paragraph",
+          "text": "Une méthode peut renvoyer une valeur avec return. Elle n'est pas obligée d'afficher directement quelque chose dans la console."
+        }
+      ]
+    },
+    {
+      "id": "verifier-donnees",
+      "type": "section",
+      "number": 6,
+      "title": "Vérifier les données à la création",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "Une classe peut vérifier que les objets sont créés avec des données valides."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "class Pizza:\n    def __init__(self, nom, prix_centimes):\n        nom = nom.strip()\n\n        if nom == \"\":\n            raise ValueError(\"Le nom de la pizza est obligatoire.\")\n        if prix_centimes < 0:\n            raise ValueError(\"Le prix ne peut pas être négatif.\")\n\n        self.nom = nom\n        self.prix_centimes = prix_centimes"
+        },
+        {
+          "type": "paragraph",
+          "text": "Ces vérifications protègent les règles de l'objet quel que soit l'endroit du programme où il est créé."
+        }
+      ]
+    },
+    {
+      "id": "adapter-menu",
+      "type": "section",
+      "number": 7,
+      "title": "Adapter le menu du projet",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "La liste du menu devient une liste d'objets Pizza :"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "menu = [\n    Pizza(\"Margherita\", 850),\n    Pizza(\"Reine\", 1050),\n    Pizza(\"Quatre fromages\", 1100),\n]\n\nfor pizza in menu:\n    print(pizza.description())"
+        },
+        {
+          "type": "paragraph",
+          "text": "Au lieu d'écrire pizza[\"nom\"], on écrit maintenant pizza.nom. Au lieu d'écrire pizza[\"prix_centimes\"], on écrit pizza.prix_centimes."
+        },
+        {
+          "type": "paragraph",
+          "text": "On peut conserver le dictionnaire de commande de l'étape 2 pour le moment :"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "commande = {\n    \"Margherita\": 2,\n    \"Quatre fromages\": 1,\n}"
+        },
+        {
+          "type": "paragraph",
+          "text": "Puis adapter le calcul du total :"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "def calculer_total_centimes(menu, commande):\n    total = 0\n\n    for pizza in menu:\n        quantite = commande.get(pizza.nom, 0)\n        total += pizza.prix_pour(quantite)\n\n    return total"
+        },
+        {
+          "type": "paragraph",
+          "text": "La fonction de saisie console de l'étape 2 peut également être conservée en remplaçant pizza[\"nom\"] par pizza.nom."
+        }
+      ]
+    },
+    {
+      "id": "classe-complete-exercice",
+      "type": "section",
+      "number": 8,
+      "title": "Une classe complète pour l'exercice",
+      "children": [
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "Classe Pizza complète et menu d'exemple",
+          "code": "class Pizza:\n    def __init__(self, nom, prix_centimes):\n        nom = nom.strip()\n\n        if not nom:\n            raise ValueError(\"Le nom de la pizza est obligatoire.\")\n        if prix_centimes < 0:\n            raise ValueError(\"Le prix ne peut pas être négatif.\")\n\n        self.nom = nom\n        self.prix_centimes = prix_centimes\n\n    def description(self):\n        prix = self.prix_centimes / 100\n        return f\"{self.nom} — {prix:.2f} €\"\n\n    def prix_pour(self, quantite):\n        if quantite < 0:\n            raise ValueError(\"La quantité ne peut pas être négative.\")\n        return self.prix_centimes * quantite\n\nmenu = [\n    Pizza(\"Margherita\", 850),\n    Pizza(\"Reine\", 1050),\n    Pizza(\"Quatre fromages\", 1100),\n]\n\nfor pizza in menu:\n    print(pizza.description())"
+        },
+        {
+          "type": "paragraph",
+          "text": "À ce stade, la classe Pizza décrit les données et les opérations liées à une pizza. Le programme de console peut se servir de ces objets pour afficher le menu et calculer une commande."
+        }
+      ]
+    },
+    {
+      "id": "attributs-publics-nommage",
+      "type": "section",
+      "number": 9,
+      "title": "Attributs publics et convention de nommage",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "Dans les exemples, nom et prix_centimes sont des attributs publics. On peut les lire avec pizza.nom et les modifier avec une affectation."
+        },
+        {
+          "type": "paragraph",
+          "text": "Python permet aussi d'écrire un attribut avec un underscore initial, par exemple self._prix_centimes. Cela signale aux autres développeurs que l'attribut est destiné à un usage interne. C'est une convention : contrairement à certains langages, Python ne rend pas réellement cet attribut inaccessible."
+        },
+        {
+          "type": "callout",
+          "variant": "note",
+          "title": "Conseil",
+          "children": [
+            {
+              "type": "paragraph",
+              "text": "Au début, utilise des attributs publics simples. Nous verrons plus tard comment faire évoluer la validation et l'accès aux attributs si le projet en a besoin."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "attention-attributs-classe",
+      "type": "callout",
+      "variant": "warning",
+      "title": "Attention aux attributs de classe",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "Un attribut défini directement dans le corps de la classe est partagé par les instances, sauf si chaque instance reçoit son propre attribut. Pour les données qui varient d'une pizza à l'autre, comme son nom et son prix, initialise-les dans __init__ avec self."
+        }
+      ]
+    },
+    {
+      "id": "a-faire",
+      "type": "checklist",
+      "title": "À faire",
+      "variant": "card",
+      "items": [
+        {
+          "id": "creer-classe-pizza",
+          "text": "Créer la classe Pizza avec nom et prix_centimes.",
+          "checked": false
+        },
+        {
+          "id": "valider-donnees-pizza",
+          "text": "Ajouter la vérification d'un nom vide et d'un prix négatif.",
+          "checked": false
+        },
+        {
+          "id": "methode-description",
+          "text": "Ajouter la méthode description.",
+          "checked": false
+        },
+        {
+          "id": "methode-prix-pour",
+          "text": "Ajouter la méthode prix_pour.",
+          "checked": false
+        },
+        {
+          "id": "creer-trois-objets",
+          "text": "Créer trois objets Pizza et les stocker dans une liste.",
+          "checked": false
+        },
+        {
+          "id": "modifier-affichage-menu",
+          "text": "Modifier l'affichage du menu de l'étape 2 pour utiliser les objets.",
+          "checked": false
+        },
+        {
+          "id": "adapter-calcul-total",
+          "text": "Adapter le calcul du total et vérifier qu'il donne le même résultat qu'avant la refactorisation.",
+          "checked": false
+        }
+      ]
+    },
+    {
+      "id": "questions-comprehension",
+      "type": "questions",
+      "title": "Questions pour vérifier ta compréhension",
+      "variant": "card",
+      "items": [
+        "Quelle est la différence entre une classe et une instance ?",
+        "Quand __init__ est-elle appelée ?",
+        "Que désigne self dans une méthode ?",
+        "Pourquoi chaque objet Pizza garde-t-il ses propres nom et prix ?",
+        "Quelle différence y a-t-il entre une méthode qui utilise print et une méthode qui renvoie une valeur avec return ?",
+        "Pourquoi utilise-t-on pizza.nom au lieu de pizza[\"nom\"] ?"
+      ]
+    },
+    {
+      "id": "reperes-python",
+      "type": "callout",
+      "variant": "card",
+      "title": "Repères Python",
+      "children": [
+        {
+          "type": "list",
+          "style": "bullet",
+          "items": [
+            "class crée une nouvelle classe.",
+            "Pizza(\"Margherita\", 850) crée une instance de Pizza.",
+            "__init__ initialise l'objet au moment de sa création.",
+            "self.nom = nom crée un attribut sur l'instance courante.",
+            "pizza.description() appelle une méthode sur l'objet pizza.",
+            "raise ValueError signale qu'une donnée invalide a été fournie.",
+            "La suite portera sur la spécialisation des classes et le polymorphisme."
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,303 @@
+{
+  "id": "python-etape-4-heritage-polymorphisme",
+  "slug": "heritage-polymorphisme",
+  "title": "Héritage et polymorphisme",
+  "course": "Parcours Python",
+  "order": 4,
+  "language": "fr",
+  "contentLanguage": "python",
+  "blocks": [
+    {
+      "id": "objectif",
+      "type": "callout",
+      "variant": "card",
+      "title": "Objectif",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "À l'étape précédente, nous avons créé la classe Pizza. Nous allons maintenant élargir le menu : il contiendra des pizzas et des boissons."
+        },
+        {
+          "type": "paragraph",
+          "text": "Ces deux catégories ont des points communs : un nom, un prix et la possibilité d'afficher une description. Mais leur description peut être différente. Nous allons utiliser l'héritage et le polymorphisme pour représenter cette situation."
+        },
+        {
+          "type": "paragraph",
+          "text": "À la fin, tu devras pouvoir :"
+        },
+        {
+          "type": "list",
+          "style": "bullet",
+          "items": [
+            "Expliquer la relation entre une classe de base et une classe dérivée.",
+            "Utiliser super() pour appeler le constructeur de la classe de base.",
+            "Redéfinir une méthode dans une classe dérivée.",
+            "Reconnaître le polymorphisme dans une boucle.",
+            "Savoir quand l'héritage est adapté et quand il ne l'est pas."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "relation-heritage",
+      "type": "section",
+      "number": 1,
+      "title": "La relation d'héritage",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "L'héritage permet de créer une classe spécialisée à partir d'une classe plus générale. La classe spécialisée récupère ses attributs et méthodes, puis peut ajouter ou adapter des comportements."
+        },
+        {
+          "type": "paragraph",
+          "text": "Dans notre exemple :"
+        },
+        {
+          "type": "list",
+          "style": "bullet",
+          "items": [
+            "Produit est la classe de base.",
+            "Pizza est un type de Produit.",
+            "Boisson est un type de Produit."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "On peut donc dire qu'une pizza « est un produit » et qu'une boisson « est un produit »."
+        }
+      ]
+    },
+    {
+      "id": "classe-de-base",
+      "type": "section",
+      "number": 2,
+      "title": "Créer une classe de base",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "La classe Produit regroupe les informations et les méthodes communes."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "class Produit:\n    def __init__(self, nom, prix_centimes):\n        nom = nom.strip()\n\n        if not nom:\n            raise ValueError(\"Le nom du produit est obligatoire.\")\n        if prix_centimes < 0:\n            raise ValueError(\"Le prix ne peut pas être négatif.\")\n\n        self.nom = nom\n        self.prix_centimes = prix_centimes\n\n    def description(self):\n        prix = self.prix_centimes / 100\n        return f\"{self.nom} — {prix:.2f} €\"\n\n    def prix_pour(self, quantite):\n        if quantite < 0:\n            raise ValueError(\"La quantité ne peut pas être négative.\")\n        return self.prix_centimes * quantite"
+        },
+        {
+          "type": "paragraph",
+          "text": "La classe Produit peut déjà être utilisée directement. Elle fournit une description générique et le calcul du prix pour une quantité."
+        }
+      ]
+    },
+    {
+      "id": "specialiser-avec-super",
+      "type": "section",
+      "number": 3,
+      "title": "Spécialiser les classes avec super()",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "Pizza et Boisson héritent de Produit. Leur définition indique la classe de base entre parenthèses."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "class Pizza(Produit):\n    def __init__(self, nom, prix_centimes, taille):\n        super().__init__(nom, prix_centimes)\n        self.taille = taille\n\n    def description(self):\n        prix = self.prix_centimes / 100\n        return f\"Pizza {self.nom} ({self.taille}) — {prix:.2f} €\"\n\nclass Boisson(Produit):\n    def __init__(self, nom, prix_centimes, volume_ml):\n        super().__init__(nom, prix_centimes)\n        self.volume_ml = volume_ml\n\n    def description(self):\n        prix = self.prix_centimes / 100\n        return f\"{self.nom} ({self.volume_ml} ml) — {prix:.2f} €\""
+        },
+        {
+          "type": "paragraph",
+          "text": "super().__init__(nom, prix_centimes) appelle le constructeur de Produit. Cela évite de recopier la validation et l'initialisation du nom et du prix. Chaque classe spécialisée ajoute son propre attribut."
+        },
+        {
+          "type": "paragraph",
+          "text": "Les objets Pizza et Boisson héritent aussi de la méthode prix_pour. On peut donc appeler cette méthode sur les deux types d'objets."
+        }
+      ]
+    },
+    {
+      "id": "redefinir-methode",
+      "type": "section",
+      "number": 4,
+      "title": "Redéfinir une méthode",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "Pizza et Boisson définissent toutes les deux une méthode description. Elles remplacent la version générique de Produit pour donner une information adaptée à leur type."
+        },
+        {
+          "type": "paragraph",
+          "text": "On appelle cela redéfinir une méthode (override). La méthode conserve le même nom, mais son comportement dépend de la classe de l'objet."
+        }
+      ]
+    },
+    {
+      "id": "comprendre-polymorphisme",
+      "type": "section",
+      "number": 5,
+      "title": "Comprendre le polymorphisme",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "Le polymorphisme permet d'utiliser des objets de classes différentes à travers une même opération, lorsque ces classes offrent une interface commune."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "menu = [\n    Pizza(\"Margherita\", 850, \"moyenne\"),\n    Pizza(\"Reine\", 1050, \"grande\"),\n    Boisson(\"Eau pétillante\", 250, 500),\n    Boisson(\"Limonade\", 350, 330),\n]\n\nfor produit in menu:\n    print(produit.description())"
+        },
+        {
+          "type": "paragraph",
+          "text": "La boucle n'a pas besoin de vérifier si produit est une Pizza ou une Boisson. Elle appelle description() sur chaque objet ; Python exécute la méthode adaptée à sa classe."
+        },
+        {
+          "type": "paragraph",
+          "text": "Le calcul du total peut aussi utiliser la méthode héritée :"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "def calculer_total_centimes(menu, commande):\n    total = 0\n\n    for produit in menu:\n        quantite = commande.get(produit.nom, 0)\n        total += produit.prix_pour(quantite)\n\n    return total"
+        },
+        {
+          "type": "paragraph",
+          "text": "Le dictionnaire commande peut rester identique à celui de l'étape 2 :"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "commande = {\n    \"Margherita\": 2,\n    \"Eau pétillante\": 1,\n}"
+        },
+        {
+          "type": "paragraph",
+          "text": "Le menu contient maintenant plusieurs types de produits, mais la fonction de calcul utilise la même méthode prix_pour pour chacun."
+        }
+      ]
+    },
+    {
+      "id": "exemple-complet",
+      "type": "section",
+      "number": 6,
+      "title": "Exemple complet",
+      "children": [
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "Produit, Pizza, Boisson et menu polymorphe",
+          "code": "class Produit:\n    def __init__(self, nom, prix_centimes):\n        nom = nom.strip()\n\n        if not nom:\n            raise ValueError(\"Le nom du produit est obligatoire.\")\n        if prix_centimes < 0:\n            raise ValueError(\"Le prix ne peut pas être négatif.\")\n\n        self.nom = nom\n        self.prix_centimes = prix_centimes\n\n    def description(self):\n        prix = self.prix_centimes / 100\n        return f\"{self.nom} — {prix:.2f} €\"\n\n    def prix_pour(self, quantite):\n        if quantite < 0:\n            raise ValueError(\"La quantité ne peut pas être négative.\")\n        return self.prix_centimes * quantite\n\nclass Pizza(Produit):\n    def __init__(self, nom, prix_centimes, taille):\n        super().__init__(nom, prix_centimes)\n        self.taille = taille\n\n    def description(self):\n        prix = self.prix_centimes / 100\n        return f\"Pizza {self.nom} ({self.taille}) — {prix:.2f} €\"\n\nclass Boisson(Produit):\n    def __init__(self, nom, prix_centimes, volume_ml):\n        super().__init__(nom, prix_centimes)\n        self.volume_ml = volume_ml\n\n    def description(self):\n        prix = self.prix_centimes / 100\n        return f\"{self.nom} ({self.volume_ml} ml) — {prix:.2f} €\"\n\nmenu = [\n    Pizza(\"Margherita\", 850, \"moyenne\"),\n    Pizza(\"Reine\", 1050, \"grande\"),\n    Boisson(\"Eau pétillante\", 250, 500),\n    Boisson(\"Limonade\", 350, 330),\n]\n\nfor produit in menu:\n    print(produit.description())"
+        }
+      ]
+    },
+    {
+      "id": "quand-utiliser-heritage",
+      "type": "section",
+      "number": 7,
+      "title": "Quand utiliser l'héritage ?",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "L'héritage est pertinent lorsque la classe spécialisée peut réellement être décrite comme un type de la classe de base et qu'elle peut utiliser les comportements communs sans les contredire."
+        },
+        {
+          "type": "paragraph",
+          "text": "Il ne faut pas créer une classe de base uniquement pour éviter quelques lignes de code répétées. Si deux objets n'ont pas de véritable relation de spécialisation, une autre organisation peut être plus claire. La composition sera abordée dans la prochaine étape."
+        },
+        {
+          "type": "list",
+          "style": "bullet",
+          "title": "À éviter au début",
+          "items": [
+            "Multiplier les niveaux d'héritage.",
+            "Créer des classes sans comportement ni raison métier.",
+            "Faire dépendre le programme de vérifications répétées comme isinstance(produit, Pizza) dans chaque fonction.",
+            "Oublier que les objets dérivés doivent rester utilisables là où un Produit est attendu."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "a-faire",
+      "type": "checklist",
+      "title": "À faire",
+      "variant": "card",
+      "items": [
+        {
+          "id": "creer-produit",
+          "text": "Créer la classe Produit avec un nom, un prix et une méthode prix_pour.",
+          "checked": false
+        },
+        {
+          "id": "faire-heriter-pizza",
+          "text": "Faire hériter Pizza de Produit.",
+          "checked": false
+        },
+        {
+          "id": "faire-heriter-boisson",
+          "text": "Faire hériter Boisson de Produit.",
+          "checked": false
+        },
+        {
+          "id": "ajouter-attributs-specifiques",
+          "text": "Ajouter taille à Pizza et volume_ml à Boisson.",
+          "checked": false
+        },
+        {
+          "id": "redefinir-description",
+          "text": "Redéfinir description dans chaque sous-classe.",
+          "checked": false
+        },
+        {
+          "id": "menu-mixte",
+          "text": "Construire un menu qui contient des pizzas et des boissons.",
+          "checked": false
+        },
+        {
+          "id": "affichage-polymorphe",
+          "text": "Afficher le menu avec une seule boucle qui appelle description().",
+          "checked": false
+        },
+        {
+          "id": "saisie-quantite-produits",
+          "text": "Adapter la saisie de commande pour demander une quantité pour chaque produit.",
+          "checked": false
+        },
+        {
+          "id": "calcul-total-polymorphe",
+          "text": "Calculer le total sans vérifier le type de chaque produit.",
+          "checked": false
+        }
+      ]
+    },
+    {
+      "id": "questions-comprehension",
+      "type": "questions",
+      "title": "Questions pour vérifier ta compréhension",
+      "variant": "card",
+      "items": [
+        "Que reçoit Pizza en héritant de Produit ?",
+        "À quoi sert super().__init__(...) ?",
+        "Que signifie redéfinir une méthode ?",
+        "Pourquoi la boucle du menu n'a-t-elle pas besoin de distinguer Pizza et Boisson ?",
+        "Dans quel cas l'héritage ne serait-il pas un bon choix ?"
+      ]
+    },
+    {
+      "id": "reperes-python",
+      "type": "callout",
+      "variant": "card",
+      "title": "Repères Python",
+      "children": [
+        {
+          "type": "list",
+          "style": "bullet",
+          "items": [
+            "class Pizza(Produit) déclare une classe dérivée de Produit.",
+            "super() donne accès à la classe de base selon l'ordre de résolution Python.",
+            "Redéfinir une méthode consiste à lui donner une nouvelle implémentation dans une classe dérivée.",
+            "Le polymorphisme permet d'appeler la même méthode sur plusieurs types d'objets.",
+            "L'héritage exprime une relation « est un ».",
+            "L'étape suivante abordera la composition et la sauvegarde de données."
+          ]
+        }
+      ]
+    }
+  ]
+}

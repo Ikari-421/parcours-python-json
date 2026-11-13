@@ -1,0 +1,10 @@
+{
+  "home": "00_Accueil_Parcours_Python.json",
+  "lessons": [
+    "01_Collections_Python.json",
+    "02_Fonctions_Python.json",
+    "03_Classes_Objets_Python.json",
+    "04_Heritage_Polymorphisme_Python.json",
+    "05_Composition_Serialisation_Python.json"
+  ]
+}
