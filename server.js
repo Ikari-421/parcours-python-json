@@ -1,9 +1,23 @@
 const http = require("node:http");
+const fsSync = require("node:fs");
 const fs = require("node:fs/promises");
 const path = require("node:path");
 
-const root = __dirname;
+// Cherche docs/ à côté de server.js, puis un niveau au-dessus.
+// S'il n'existe pas, le serveur utilise le dossier actuel.
+const candidateRoots = [
+  path.join(__dirname, "docs"),
+  path.resolve(__dirname, "../docs"),
+  __dirname
+];
+
+const root =
+  candidateRoots.find(directory =>
+    fsSync.existsSync(path.join(directory, "index.html"))
+  ) || __dirname;
+
 const port = Number(process.env.PORT) || 3000;
+
 const contentTypes = {
   ".html": "text/html; charset=utf-8",
   ".css": "text/css; charset=utf-8",
@@ -13,30 +27,41 @@ const contentTypes = {
 
 const server = http.createServer(async (request, response) => {
   let pathname;
+
   try {
-    pathname = decodeURIComponent(new URL(request.url, "http://localhost").pathname);
+    pathname = decodeURIComponent(
+      new URL(request.url, "http://localhost").pathname
+    );
   } catch {
     response.writeHead(400);
     response.end("Adresse invalide");
     return;
   }
+
   if (pathname === "/") pathname = "/index.html";
 
   const filePath = path.resolve(root, "." + pathname);
+
   if (filePath !== root && !filePath.startsWith(root + path.sep)) {
     response.writeHead(403);
     response.end("Accès interdit");
     return;
   }
+
   try {
     const content = await fs.readFile(filePath);
+
     response.writeHead(200, {
-      "Content-Type": contentTypes[path.extname(filePath)] || "application/octet-stream",
+      "Content-Type":
+        contentTypes[path.extname(filePath)] || "application/octet-stream",
       "X-Content-Type-Options": "nosniff"
     });
+
     response.end(content);
   } catch {
-    response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
+    response.writeHead(404, {
+      "Content-Type": "text/plain; charset=utf-8"
+    });
     response.end("Fichier introuvable");
   }
 });
