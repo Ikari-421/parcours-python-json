@@ -1,0 +1,7 @@
+{
+  "name": "site-parcours-python",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Site de cours généré à partir de pages JSON",
+  "scripts": { "start": "node server.js" }
+}

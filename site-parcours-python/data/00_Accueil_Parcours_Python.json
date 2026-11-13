@@ -1,0 +1,126 @@
+{
+  "id": "python-parcours-accueil",
+  "slug": "accueil",
+  "pageType": "home",
+  "title": "Apprendre la programmation orientée objet avec Python",
+  "course": "Parcours Python",
+  "order": 0,
+  "language": "fr",
+  "contentLanguage": "python",
+  "blocks": [
+    {
+      "id": "hero",
+      "type": "hero",
+      "eyebrow": "Parcours débutant",
+      "title": "Construis une application de commande en Python",
+      "text": "Progresse étape par étape, des listes et dictionnaires jusqu'à la programmation orientée objet et à la sauvegarde des données.",
+      "primaryAction": {
+        "label": "Commencer le parcours",
+        "href": "/lecons/collections-listes-dictionnaires"
+      }
+    },
+    {
+      "id": "presentation",
+      "type": "section",
+      "title": "À propos de ce parcours",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "Ce parcours t'accompagne dans la création progressive d'une petite application de pizzeria en console. Tu vas d'abord organiser les données du menu et de la commande, puis structurer le programme avec des fonctions et des classes."
+        },
+        {
+          "type": "paragraph",
+          "text": "Chaque étape réutilise les notions déjà vues. À la fin, l'application pourra représenter des produits et des commandes avec des objets, calculer un total et sauvegarder une commande dans un fichier JSON."
+        }
+      ]
+    },
+    {
+      "id": "parcours",
+      "type": "section",
+      "title": "Les étapes du parcours",
+      "children": [
+        {
+          "type": "lessonCard",
+          "lessonId": "python-etape-1-collections",
+          "order": 1,
+          "title": "Les collections : listes et dictionnaires",
+          "description": "Apprends à représenter un menu et une commande avec des listes et des dictionnaires.",
+          "href": "/lecons/collections-listes-dictionnaires",
+          "status": "available"
+        },
+        {
+          "type": "lessonCard",
+          "lessonId": "python-etape-2-fonctions",
+          "order": 2,
+          "title": "Les fonctions et le parcours en console",
+          "description": "Découpe le programme en fonctions, recueille les choix du client et calcule le total.",
+          "href": "/lecons/fonctions-parcours-console",
+          "status": "available"
+        },
+        {
+          "type": "lessonCard",
+          "lessonId": "python-etape-3-classes-objets",
+          "order": 3,
+          "title": "Classes et objets : créer ses propres types",
+          "description": "Crée une classe Pizza, ses attributs et ses méthodes, puis remplace les dictionnaires du menu par des objets.",
+          "href": "/lecons/classes-objets-creer-ses-propres-types",
+          "status": "available"
+        },
+        {
+          "type": "lessonCard",
+          "lessonId": "python-etape-4-heritage-polymorphisme",
+          "order": 4,
+          "title": "Héritage et polymorphisme",
+          "description": "Spécialise Produit avec Pizza et Boisson et utilise les mêmes méthodes sur plusieurs types de produits.",
+          "href": "/lecons/heritage-polymorphisme",
+          "status": "available"
+        },
+        {
+          "type": "lessonCard",
+          "lessonId": "python-etape-5-composition-serialisation",
+          "order": 5,
+          "title": "Composition et sauvegarde des commandes",
+          "description": "Compose une commande avec des lignes, puis convertis ses objets en données JSON pour les enregistrer et les recharger.",
+          "href": "/lecons/composition-sauvegarde-commandes",
+          "status": "available"
+        }
+      ]
+    },
+    {
+      "id": "competences-finales",
+      "type": "callout",
+      "variant": "card",
+      "title": "Ce que tu vas apprendre à faire",
+      "children": [
+        {
+          "type": "list",
+          "style": "bullet",
+          "items": [
+            "Organiser des données avec des listes et des dictionnaires.",
+            "Découper un programme en fonctions réutilisables.",
+            "Créer des classes et des objets avec des règles de validation.",
+            "Utiliser l'héritage et le polymorphisme pour représenter différents produits.",
+            "Assembler des objets avec la composition.",
+            "Enregistrer et recharger des données au format JSON."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "conseil-progression",
+      "type": "callout",
+      "variant": "note",
+      "title": "Comment suivre le parcours",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "Suis les étapes dans l'ordre et réalise les exercices avant de passer à la suite. Chaque leçon contient un objectif, des explications, des exemples de code et des questions pour vérifier ta compréhension."
+        },
+        {
+          "type": "paragraph",
+          "text": "Le projet est développé en console. La priorité est de comprendre comment organiser le programme et ses données avant d'ajouter une interface graphique ou web."
+        }
+      ]
+    }
+  ]
+}

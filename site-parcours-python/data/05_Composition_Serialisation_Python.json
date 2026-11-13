@@ -1,0 +1,400 @@
+{
+  "id": "python-etape-5-composition-serialisation",
+  "slug": "composition-sauvegarde-commandes",
+  "title": "Composition et sauvegarde des commandes",
+  "course": "Parcours Python",
+  "order": 5,
+  "language": "fr",
+  "contentLanguage": "python",
+  "blocks": [
+    {
+      "id": "objectif",
+      "type": "callout",
+      "variant": "card",
+      "title": "Objectif",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "À l'étape précédente, le menu contenait des objets Produit, Pizza et Boisson. La commande, elle, était encore représentée par un dictionnaire. Nous allons maintenant la modéliser avec des objets qui collaborent, puis sauvegarder ses données dans un fichier JSON."
+        },
+        {
+          "type": "paragraph",
+          "text": "À la fin, tu devras pouvoir :"
+        },
+        {
+          "type": "list",
+          "style": "bullet",
+          "items": [
+            "Reconnaître une relation de composition.",
+            "Créer une classe LigneCommande.",
+            "Faire gérer des lignes par une classe Commande.",
+            "Calculer le total d'une commande.",
+            "Convertir des objets en données JSON puis les reconstruire."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "heritage-ou-composition",
+      "type": "section",
+      "number": 1,
+      "title": "Héritage ou composition ?",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "L'héritage exprime une relation « est un » :"
+        },
+        {
+          "type": "list",
+          "style": "bullet",
+          "items": [
+            "Une Pizza est un Produit.",
+            "Une Boisson est un Produit."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "La composition exprime une relation « contient » ou « est constituée de » :"
+        },
+        {
+          "type": "list",
+          "style": "bullet",
+          "items": [
+            "Une Commande contient des lignes de commande.",
+            "Une LigneCommande contient un produit et une quantité."
+          ]
+        },
+        {
+          "type": "callout",
+          "variant": "note",
+          "title": "À retenir",
+          "children": [
+            {
+              "type": "paragraph",
+              "text": "On ne fait pas hériter Commande de Produit : une commande n'est pas un produit."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ligne-commande",
+      "type": "section",
+      "number": 2,
+      "title": "Créer une ligne de commande",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "Une ligne associe un produit à une quantité. Son sous-total dépend des deux."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "class LigneCommande:\n    def __init__(self, produit, quantite):\n        if quantite <= 0:\n            raise ValueError(\"La quantité doit être supérieure à zéro.\")\n\n        self.produit = produit\n        self.quantite = quantite\n\n    def sous_total_centimes(self):\n        return self.produit.prix_pour(self.quantite)"
+        },
+        {
+          "type": "paragraph",
+          "text": "La ligne contient une référence à un objet Produit. Comme Pizza et Boisson héritent de Produit, elle peut utiliser prix_pour sur l'un ou l'autre."
+        }
+      ]
+    },
+    {
+      "id": "commande-avec-lignes",
+      "type": "section",
+      "number": 3,
+      "title": "Composer une commande avec des lignes",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "La commande possède une liste de lignes et fournit des opérations propres à son rôle."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "class Commande:\n    def __init__(self):\n        self.lignes = []\n\n    def ajouter(self, produit, quantite):\n        ligne = LigneCommande(produit, quantite)\n        self.lignes.append(ligne)\n\n    def total_centimes(self):\n        return sum(\n            ligne.sous_total_centimes()\n            for ligne in self.lignes\n        )\n\ncommande = Commande()\ncommande.ajouter(Pizza(\"Margherita\", 850, \"moyenne\"), 2)\ncommande.ajouter(Boisson(\"Limonade\", 350, 330), 1)\n\nprint(commande.total_centimes())  # 2050"
+        },
+        {
+          "type": "paragraph",
+          "text": "La commande est composée de lignes. Chaque ligne est composée d'un produit et d'une quantité. On peut aussi dire qu'une commande « a » plusieurs lignes."
+        }
+      ]
+    },
+    {
+      "id": "recapitulatif-console",
+      "type": "section",
+      "number": 4,
+      "title": "Afficher le récapitulatif dans la console",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "Les classes fournissent les données et les calculs. Une fonction du programme peut se charger de l'affichage."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "def afficher_recapitulatif(commande):\n    print(\"\\n--- RÉCAPITULATIF ---\")\n\n    for ligne in commande.lignes:\n        sous_total = ligne.sous_total_centimes()\n        montant = f\"{sous_total // 100},{sous_total % 100:02d}\"\n        print(\n            f\"{ligne.quantite} x \"\n            f\"{ligne.produit.description()} : \"\n            f\"{montant} €\"\n        )\n\n    total = commande.total_centimes()\n    montant_total = f\"{total // 100},{total % 100:02d}\"\n    print(f\"Total : {montant_total} €\")"
+        },
+        {
+          "type": "paragraph",
+          "text": "La méthode description() reste polymorphe : elle affiche les informations spécifiques d'une pizza ou d'une boisson."
+        }
+      ]
+    },
+    {
+      "id": "pourquoi-convertir-json",
+      "type": "section",
+      "number": 5,
+      "title": "Pourquoi convertir les objets avant de créer le JSON ?",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "JSON représente des valeurs simples : textes, nombres, booléens, valeurs nulles, listes et dictionnaires. Il ne sauvegarde pas directement une classe Python ni le comportement de ses objets."
+        },
+        {
+          "type": "paragraph",
+          "text": "Il faut donc convertir la commande en dictionnaires et listes, puis reconstruire les objets lorsqu'on recharge le fichier. Une commande sauvegardée pourrait ressembler à ceci :"
+        },
+        {
+          "type": "code",
+          "language": "json",
+          "caption": "Exemple de commande sérialisée",
+          "code": "{\n  \"lignes\": [\n    {\n      \"produit\": {\n        \"type\": \"pizza\",\n        \"nom\": \"Margherita\",\n        \"prix_centimes\": 850,\n        \"taille\": \"moyenne\"\n      },\n      \"quantite\": 2\n    },\n    {\n      \"produit\": {\n        \"type\": \"boisson\",\n        \"nom\": \"Limonade\",\n        \"prix_centimes\": 350,\n        \"volume_ml\": 330\n      },\n      \"quantite\": 1\n    }\n  ]\n}"
+        },
+        {
+          "type": "callout",
+          "variant": "note",
+          "title": "Le champ type",
+          "children": [
+            {
+              "type": "paragraph",
+              "text": "Le champ type indique quelle classe utiliser pour recréer le produit."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "convertir-produits",
+      "type": "section",
+      "number": 6,
+      "title": "Convertir les produits en données",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "Ajoute ces méthodes aux classes Produit, Pizza et Boisson de l'étape 4."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "caption": "Données de base d'un produit",
+          "code": "class Produit:\n    # Le constructeur et les autres méthodes restent ceux de l'étape 4.\n\n    def vers_donnees(self):\n        return {\n            \"type\": \"produit\",\n            \"nom\": self.nom,\n            \"prix_centimes\": self.prix_centimes,\n        }"
+        },
+        {
+          "type": "paragraph",
+          "text": "Dans Pizza, redéfinis la méthode pour ajouter la taille :"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "class Pizza(Produit):\n    # Le constructeur et les autres méthodes restent ceux de l'étape 4.\n\n    def vers_donnees(self):\n        donnees = super().vers_donnees()\n        donnees[\"type\"] = \"pizza\"\n        donnees[\"taille\"] = self.taille\n        return donnees"
+        },
+        {
+          "type": "paragraph",
+          "text": "Dans Boisson, ajoute le volume :"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "class Boisson(Produit):\n    # Le constructeur et les autres méthodes restent ceux de l'étape 4.\n\n    def vers_donnees(self):\n        donnees = super().vers_donnees()\n        donnees[\"type\"] = \"boisson\"\n        donnees[\"volume_ml\"] = self.volume_ml\n        return donnees"
+        },
+        {
+          "type": "paragraph",
+          "text": "On peut reconstruire la classe adaptée en examinant les données :"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "def produit_depuis_donnees(donnees):\n    type_produit = donnees[\"type\"]\n    nom = donnees[\"nom\"]\n    prix_centimes = donnees[\"prix_centimes\"]\n\n    if type_produit == \"pizza\":\n        return Pizza(\n            nom,\n            prix_centimes,\n            donnees[\"taille\"],\n        )\n    elif type_produit == \"boisson\":\n        return Boisson(\n            nom,\n            prix_centimes,\n            donnees[\"volume_ml\"],\n        )\n    else:\n        raise ValueError(f\"Type de produit inconnu : {type_produit}\")"
+        }
+      ]
+    },
+    {
+      "id": "convertir-reconstruire-commande",
+      "type": "section",
+      "number": 7,
+      "title": "Convertir et reconstruire une commande",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "Ajoute ces méthodes à LigneCommande et Commande :"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "class LigneCommande:\n    # Le constructeur et sous_total_centimes restent ceux de la section 2.\n\n    def vers_donnees(self):\n        return {\n            \"produit\": self.produit.vers_donnees(),\n            \"quantite\": self.quantite,\n        }\n\nclass Commande:\n    # Le constructeur, ajouter et total_centimes restent ceux de la section 3.\n\n    def vers_donnees(self):\n        return {\n            \"lignes\": [\n                ligne.vers_donnees()\n                for ligne in self.lignes\n            ]\n        }\n\n    @classmethod\n    def depuis_donnees(cls, donnees):\n        commande = cls()\n\n        for ligne_donnees in donnees[\"lignes\"]:\n            produit = produit_depuis_donnees(\n                ligne_donnees[\"produit\"]\n            )\n            commande.ajouter(\n                produit,\n                ligne_donnees[\"quantite\"],\n            )\n\n        return commande"
+        },
+        {
+          "type": "paragraph",
+          "text": "classmethod indique que cette méthode est appelée depuis la classe plutôt que depuis une commande existante. Elle crée et renvoie une nouvelle commande."
+        }
+      ]
+    },
+    {
+      "id": "enregistrer-recharger-json",
+      "type": "section",
+      "number": 8,
+      "title": "Enregistrer et recharger le JSON",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "Le module standard json convertit les dictionnaires et les listes en texte JSON. pathlib facilite la manipulation du chemin de fichier."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "import json\nfrom pathlib import Path\n\nFICHIER_COMMANDE = Path(\"commande.json\")\n\ndef enregistrer_commande(commande):\n    donnees = commande.vers_donnees()\n    texte_json = json.dumps(\n        donnees,\n        ensure_ascii=False,\n        indent=2,\n    )\n    FICHIER_COMMANDE.write_text(\n        texte_json,\n        encoding=\"utf-8\",\n    )\n\ndef charger_commande():\n    texte_json = FICHIER_COMMANDE.read_text(encoding=\"utf-8\")\n    donnees = json.loads(texte_json)\n    return Commande.depuis_donnees(donnees)"
+        },
+        {
+          "type": "paragraph",
+          "text": "Exemple d'utilisation :"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "commande = Commande()\ncommande.ajouter(Pizza(\"Margherita\", 850, \"moyenne\"), 2)\ncommande.ajouter(Boisson(\"Limonade\", 350, 330), 1)\n\nenregistrer_commande(commande)\ncommande_rechargee = charger_commande()\n\nprint(commande_rechargee.total_centimes())  # 2050"
+        },
+        {
+          "type": "paragraph",
+          "text": "write_text crée ou remplace le fichier. read_text l'ouvre en lecture. Si le fichier n'existe pas ou si son contenu n'est pas un JSON valide, Python lève une exception, par exemple FileNotFoundError ou JSONDecodeError. Le programme pourra intercepter ces erreurs et afficher un message compréhensible."
+        }
+      ]
+    },
+    {
+      "id": "precaution-serialisation",
+      "type": "section",
+      "number": 9,
+      "title": "Une précaution sur la sérialisation",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "pickle peut sauvegarder directement certains objets Python, mais son chargement peut exécuter du code. Ne charge jamais un fichier pickle provenant d'une source inconnue ou modifiable par quelqu'un d'autre."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour cet exercice, JSON est préférable : le format est lisible et peut être utilisé par d'autres langages. Il faut tout de même vérifier les données après chargement, car un fichier JSON peut être incomplet, mal formé ou altéré."
+        }
+      ]
+    },
+    {
+      "id": "a-faire",
+      "type": "checklist",
+      "title": "À faire",
+      "variant": "card",
+      "items": [
+        {
+          "id": "creer-ligne-commande",
+          "text": "Créer LigneCommande avec un produit et une quantité.",
+          "checked": false
+        },
+        {
+          "id": "creer-commande",
+          "text": "Créer Commande avec une liste de lignes.",
+          "checked": false
+        },
+        {
+          "id": "ajouter-produits",
+          "text": "Ajouter plusieurs pizzas et boissons à une commande.",
+          "checked": false
+        },
+        {
+          "id": "afficher-calculer",
+          "text": "Afficher les lignes et calculer le total.",
+          "checked": false
+        },
+        {
+          "id": "vers-donnees-produits-lignes",
+          "text": "Ajouter vers_donnees aux produits et aux lignes.",
+          "checked": false
+        },
+        {
+          "id": "serialiser-commande",
+          "text": "Ajouter vers_donnees et depuis_donnees à Commande.",
+          "checked": false
+        },
+        {
+          "id": "enregistrer-fichier",
+          "text": "Enregistrer une commande dans commande.json.",
+          "checked": false
+        },
+        {
+          "id": "recharger-fichier",
+          "text": "Recharger le fichier et vérifier que le total est identique.",
+          "checked": false
+        },
+        {
+          "id": "gerer-erreurs-chargement",
+          "text": "Essayer de charger un fichier manquant ou un JSON invalide et afficher un message compréhensible dans la console.",
+          "checked": false
+        }
+      ]
+    },
+    {
+      "id": "bilan-projet",
+      "type": "callout",
+      "variant": "card",
+      "title": "Bilan du projet",
+      "children": [
+        {
+          "type": "paragraph",
+          "text": "Ton application console peut maintenant :"
+        },
+        {
+          "type": "list",
+          "style": "bullet",
+          "items": [
+            "Proposer un menu de produits.",
+            "Guider le client avec des questions.",
+            "Représenter produits et commandes avec des objets.",
+            "Utiliser l'héritage pour spécialiser Pizza et Boisson.",
+            "Utiliser le polymorphisme pour afficher chaque produit.",
+            "Utiliser la composition pour construire une commande avec des lignes.",
+            "Sauvegarder et recharger une commande en JSON."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "questions-comprehension",
+      "type": "questions",
+      "title": "Questions pour vérifier ta compréhension",
+      "variant": "card",
+      "items": [
+        "Pourquoi Commande ne doit-elle pas hériter de Produit ?",
+        "Quels objets sont contenus dans une Commande ?",
+        "Pourquoi convertir les objets avant de les enregistrer en JSON ?",
+        "À quoi sert le champ type dans les données JSON ?",
+        "Quelle précaution faut-il prendre avec pickle ?"
+      ]
+    },
+    {
+      "id": "reperes-python",
+      "type": "callout",
+      "variant": "card",
+      "title": "Repères Python",
+      "children": [
+        {
+          "type": "list",
+          "style": "bullet",
+          "items": [
+            "« Est un » correspond souvent à l'héritage.",
+            "« Contient » ou « est composé de » correspond souvent à la composition.",
+            "json.dumps convertit des données Python en texte JSON.",
+            "json.loads convertit du texte JSON en données Python.",
+            "Il faut reconstruire les objets explicitement après leur chargement.",
+            "La sérialisation permet de sauvegarder ou de transmettre des données."
+          ]
+        }
+      ]
+    }
+  ]
+}
